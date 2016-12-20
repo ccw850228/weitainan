@@ -3,6 +3,7 @@ var all=[];
 var favorite=[];
 var focusInfoWindow;
 var map;
+ 
 
   jQuery(document).ready(function($) {
       // $.get('/getJson').success(function(restaurants){
@@ -14,6 +15,49 @@ var map;
       zoom: 12,
       center: {lat: 22.999533, lng: 120.203401}
     });
+
+    var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        // Add some markers to the map.
+        // Note: The code uses the JavaScript Array.prototype.map() method to
+        // create an array of markers based on a given "locations" array.
+        // The map() method here has nothing to do with the Google Maps API.
+        var markers = locations.map(function(location, i) {
+          return new google.maps.Marker({
+            position: location,
+            label: labels[i % labels.length]
+          });
+        });
+
+        // Add a marker clusterer to manage the markers.
+        var markerCluster = new MarkerClusterer(map, markers,
+            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+      
+      var locations = [
+        {lat: -31.563910, lng: 147.154312},
+        {lat: -33.718234, lng: 150.363181},
+        {lat: -33.727111, lng: 150.371124},
+        {lat: -33.848588, lng: 151.209834},
+        {lat: -33.851702, lng: 151.216968},
+        {lat: -34.671264, lng: 150.863657},
+        {lat: -35.304724, lng: 148.662905},
+        {lat: -36.817685, lng: 175.699196},
+        {lat: -36.828611, lng: 175.790222},
+        {lat: -37.750000, lng: 145.116667},
+        {lat: -37.759859, lng: 145.128708},
+        {lat: -37.765015, lng: 145.133858},
+        {lat: -37.770104, lng: 145.143299},
+        {lat: -37.773700, lng: 145.145187},
+        {lat: -37.774785, lng: 145.137978},
+        {lat: -37.819616, lng: 144.968119},
+        {lat: -38.330766, lng: 144.695692},
+        {lat: -39.927193, lng: 175.053218},
+        {lat: -41.330162, lng: 174.865694},
+        {lat: -42.734358, lng: 147.439506},
+        {lat: -42.734358, lng: 147.501315},
+        {lat: -42.735258, lng: 147.438000},
+        {lat: -43.999792, lng: 170.463352}
+      ]
 
     includeData();
     
@@ -84,7 +128,18 @@ var map;
       coords: [1, 1, 1, 20, 18, 20, 18, 1],
       type: 'poly'
     };
+
     //console.log(res_X);
+    
+
+    // var markers = locations.map(function(location) {
+    //       return new google.maps.Marker({
+    //         position: {lat: res_Y, lng: res_X}
+           
+    //       });
+    //     });
+
+
     var marker = new google.maps.Marker({
         position: {lat: res_Y, lng: res_X},
         map: map,
@@ -93,6 +148,18 @@ var map;
                     //title: restaurant[0],
                     //zIndex: restaurant[3]
     });
+
+    // var markerCluster = new MarkerClusterer(map, markers,
+    //         {imagePath: '/public/assets/img'});
+      
+
+    // var locations = [
+    //     {lat: res_Y, lng: res_X}
+        
+    //   ];
+
+    var s1 ='<script src="/public/assets/js/markerclusterer.js"></script>';
+    var s2 ='<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0SEsueJfTm1q5k7bnAkt1OLTFv1oO2C0&signed_in=true&callback=initMap"></script>'
 
     var infowindow = new google.maps.InfoWindow({
         content: 
@@ -152,7 +219,7 @@ function focusLocation(dataCount,marker){
       if(dataElemet.html() == '<img src="https://raw.githubusercontent.com/zitim/Tainan_restaurant/master/public/assets/img/empty-heart.png">'){
         dataElemet.html('<img src="https://raw.githubusercontent.com/zitim/Tainan_restaurant/master/public/assets/img/heart.png">');
         
-        $.post('/collect', {'res_id': res_id}).success(function(data){
+        $.post('/collect', {'res_id': res_id,'user_id': user_id}).success(function(data){
               //console.log(res_id);
               if(data=='success'){
                 //window.location.reload(" page.index ");
@@ -165,7 +232,7 @@ function focusLocation(dataCount,marker){
       }else {
         dataElemet.html('<img src="https://raw.githubusercontent.com/zitim/Tainan_restaurant/master/public/assets/img/empty-heart.png">');
 
-        $.post('/remove', {'res_id': res_id}).success(function(data){
+        $.post('/remove', {'res_id': res_id,'user_id': user_id}).success(function(data){
               //console.log(res_id);
               if(data=='success'){
                 //window.location.reload(" page.index ");
@@ -176,5 +243,4 @@ function focusLocation(dataCount,marker){
           });
       }
   }
-
 
