@@ -56,7 +56,7 @@ var markers = [];
       //setMarkers(restaurants);
       
       $('#sidebar-left' ).append(
-          '<li><h3>'+restaurants[i].餐飲店家名稱+'</h3></div>'+
+          '<li id="fr"><h3>'+restaurants[i].餐飲店家名稱+'</h3></div>'+
           restaurants[i].店家地址+'<br/>'+
           restaurants[i].店家電話+'<br/>'+
           restaurants[i].營業時間+'<br/>'+
@@ -213,4 +213,3 @@ function deleteMarkers() {
    clearMarkers();
    markers = [];
 }
-

@@ -36,6 +36,10 @@ ul { list-style:none;
         float:left;
       }
      
+      #fr{
+       border-bottom: 1px solid #d2d2d2;
+      }
+
       #favorite {
           background-color: #ffffff;
           border: none;
