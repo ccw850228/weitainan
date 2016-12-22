@@ -1,10 +1,11 @@
 var restaurants=[];
 var all=[];
-var favorite=[];
 var focusInfoWindow;
 var map;
 var user_id=80;
 var markers = [];
+var focusList;
+var infoWindows=[];
 
   jQuery(document).ready(function($) {
       // $.get('/getJson').success(function(restaurants){
@@ -42,10 +43,6 @@ var markers = [];
       //console.log(restaurants[i].favorite);
       //console.log(restaurants[i].favorite);
       //var fav = restaurants[i].favorite;
-      // var restaurant = restaurants[i];
-      //var dataFavorite = data[i].favorite;
-      //console.log(restaurants[i].favorite.indexOf(user_id) != null);
-      //if (restaurants[i].favorite == false) {
       if (restaurants[i].favorite.indexOf(user_id) >=0) {  
           dataFavoriteHtml = '<img src="https://raw.githubusercontent.com/zitim/Tainan_restaurant/master/public/assets/img/heart.png">';
       } else {
@@ -56,19 +53,20 @@ var markers = [];
       //setMarkers(restaurants);
       
       $('#sidebar-left' ).append(
-          '<li id="fr"><h3>'+restaurants[i].餐飲店家名稱+'</h3></div>'+
+
+          '<li id="fr"><a href="javascript:focusLocation(\'' + i + '\')" class="clearfix"><div id="fr2"  class="chcolor"><h3>'+restaurants[i].餐飲店家名稱+'</h3>'+
+
           restaurants[i].店家地址+'<br/>'+
           restaurants[i].店家電話+'<br/>'+
           restaurants[i].營業時間+'<br/>'+
           '<button id="favorite" onclick="change_Favorite(\''+restaurants[i].id+'\',\''+restaurants[i].餐飲店家名稱+'\',\''+restaurants[i].店家地址+'\',\''+restaurants[i].店家電話+'\',\''+restaurants[i].營業時間+'\', $(this))">'+dataFavoriteHtml+'</button></li>'+
-          '</li>');
+          '</a></div></li>');
       }
     //   console.log(restaurant[2]);
   }
 
   function create_Marker(id,res_name,res_X,res_Y,res_address,res_phone,res_time,favorite) {
     // Adds markers to the map.
-
     infowindow = new google.maps.InfoWindow();
     // Marker sizes are expressed as a Size of X,Y where the origin of the image
     // (0,0) is located in the top left of the image.
@@ -90,16 +88,6 @@ var markers = [];
       type: 'poly'
     };
     //console.log(res_X);
-    var marker = new google.maps.Marker({
-        position: {lat: res_Y, lng: res_X},
-        map: map,
-                    //icon: image,
-                    //shape: shape,
-                    //title: restaurant[0],
-                    //zIndex: restaurant[3]
-    });
-    markers.push(marker);
-
     var infowindow = new google.maps.InfoWindow({
         content: 
         '<div class="res_name" ><h3>'+res_name+'</h3></div>'+
@@ -113,103 +101,187 @@ var markers = [];
               
         maxWidth: 400
     });
+    infoWindows.push(infowindow);
+
+    var markerClusterer = [];
+
+    var location=[{lat: res_Y, lng: res_X}];
+
+    var marker = new google.maps.Marker({
+        position: location,
+        map: map,
+        icon : 'https://raw.githubusercontent.com/zitim/tainan/master/public/assets/img/m1.png'
+                    //icon: image,
+                    //shape: shape,
+                    //title: restaurant[0],
+                    //zIndex: restaurant[3]
+    });
+    markers.push(marker);
+    markerClusterer.push(marker);
+
+    
+
+    var markerClusterDraw = new MarkerClusterer(map, markerClusterer, {
+                gridSize: 80,  // 多少範圍內的標記要撿在一組 (是用 grid 的概念，落在框外的有時會自成單一地圖標記 (marker)，不會轉成 marker clusterer)
+                styles: [{
+                    url: 'https://raw.githubusercontent.com/zitim/tainan/master/public/assets/img/m1.png', // 可以自訂圖案
+                    height: 45,
+                    width: 50,
+                    anchor: [1, 12],    // 文字出現在標記上的哪個位置 (position on marker)
+                    textColor: '#ffffff',
+                    textSize: 13
+                },
+                {
+                    url: 'https://raw.githubusercontent.com/zitim/tainan/master/public/assets/img/m1.png',
+                    height: 45,
+                    width: 50,
+                    anchor: [1, 8],
+                    textColor: '#ffffcc',
+                    textSize: 8
+                }],
+            });
+        
+
+
+
 
     marker.addListener('click', function() {
       infowindow.open(map, marker);
       map.zoom = 25;
-          //map.panTo(marker.getPosition());
+      map.panTo(marker.getPosition());
     });
   }
 
-
-function focusLocation(dataCount,marker){
-  console.log(dataCount);
+  function focusLocation(dataCount) {
     if (focusInfoWindow != null) {
         focusInfoWindow.close();
     }
-    // if (focusList != null) {
-    //     focusList.removeClass('selected');
-    // }
+    if (focusList != null) {
+        focusList.removeClass('selected');
+    }
 
     var focusMarker = markers[dataCount];
+    console.log(focusMarker);
     focusInfoWindow = infoWindows[dataCount];
+    console.log(focusInfoWindow);
     var listCount = Number(dataCount) + 1;
-    //focusList = $('#sidebar > li:nth-child(' + listCount + ')');
+    focusList = $('#list > li:nth-child(' + listCount + ')');
 
     focusInfoWindow.open(map, focusMarker);
     map.panTo(focusMarker.getPosition());
-    map.setZoom(15);
+    map.setZoom(12);
 
     focusMarker.setAnimation(google.maps.Animation.BOUNCE);
     window.setTimeout(function() {
         focusMarker.setAnimation(null);
     }, 2250);
 
-    //focusList.addClass('selected');
+    focusList.addClass('selected');
 
     $('.filter').hide();
-}
-function change_Favorite(res_id,res_name,res_address,res_phone,res_time,dataElemet){
+  }
 
-  if(dataElemet.html() == '<img src="https://raw.githubusercontent.com/zitim/Tainan_restaurant/master/public/assets/img/empty-heart.png">'){
-    dataElemet.html('<img src="https://raw.githubusercontent.com/zitim/Tainan_restaurant/master/public/assets/img/heart.png">');
-        
-    $.post('/collect', {'res_id': res_id,'user_id': user_id}).success(function(data){
-              //console.log(res_id);
-      if(data=='success'){
-                //window.location.reload(" page.index ");
-                //alert('刪除成功');
-      }else{
-                //alert('刪除失敗');
-      }
-    });
-        
-  }else {
-    dataElemet.html('<img src="https://raw.githubusercontent.com/zitim/Tainan_restaurant/master/public/assets/img/empty-heart.png">');
+  function change_Favorite(res_id,res_name,res_address,res_phone,res_time,dataElemet){
 
-      $.post('/remove', {'res_id': res_id,'user_id': user_id}).success(function(data){
-              //console.log(res_id);
+    if(dataElemet.html() == '<img src="https://raw.githubusercontent.com/zitim/Tainan_restaurant/master/public/assets/img/empty-heart.png">'){
+      dataElemet.html('<img src="https://raw.githubusercontent.com/zitim/Tainan_restaurant/master/public/assets/img/heart.png">');
+          
+      $.post('/collect', {'res_id': res_id,'user_id': user_id}).success(function(data){
+                //console.log(res_id);
         if(data=='success'){
-                //window.location.reload(" page.index ");
-                //alert('刪除成功');
+                  //window.location.reload(" page.index ");
+                  //alert('刪除成功');
         }else{
-                //alert('刪除失敗');
+                  //alert('刪除失敗');
         }
+      });
+          
+    }else {
+      dataElemet.html('<img src="https://raw.githubusercontent.com/zitim/Tainan_restaurant/master/public/assets/img/empty-heart.png">');
+
+        $.post('/remove', {'res_id': res_id,'user_id': user_id}).success(function(data){
+                //console.log(res_id);
+          if(data=='success'){
+                  //window.location.reload(" page.index ");
+                  //alert('刪除成功');
+          }else{
+                  //alert('刪除失敗');
+          }
+      });
+    }
+  }
+  function show_Favorite(){
+    var show_Favorite=[]
+    deleteMarkers();
+    document.getElementById('sidebar-left').innerHTML = "";
+        
+    $.get( "/list", function( data ) {
+      
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].favorite.indexOf(user_id)>=0) {
+          show_Favorite.push(data[i]);
+        }
+      }
+
+      show_Data(show_Favorite);
+      var center = { lat: 23.099533, lng: 120.203401 };
+      map.panTo(center);
+      map.setZoom(10);
+
     });
   }
-}
-function show_Favorite(){
-  var show_Favorite=[]
+
+  function working(){
+  var working=[]
   deleteMarkers();
-  document.getElementById('sidebar-left').innerHTML = "";
-      
+  document.getElementById('sidebar-left').innerHTML = ""; 
+  // var day=date.getDay();
+  var date=new Date();
+  var day=(date.getDay()+1);
+  var hour=(date.getHours());
+  var minute=(date.getMinutes());
+
   $.get( "/list", function( data ) {
+    for(var i=0;i<data.length;i++){
+      var format=(data[i].營業時間)
+    .replace(/週/g,"")
+    .replace(/一/g,"1")
+    .replace(/二/g,"2")
+    .replace(/三/g,"3")
+    .replace(/四/g,"4")
+    .replace(/五/g,"5")
+    .replace(/六/g,"6")
+    .replace(/日/g,"7");
     
-    for (var i = 0; i < data.length; i++) {
-      if (data[i].favorite.indexOf(user_id)>=0) {
-        show_Favorite.push(data[i]);
-      }
+    if(format.indexOf('/')==-1){
+     if(day>=format[0]&&day<=format[2]){
+        working.push(data[i]);
+     }
     }
 
-    show_Data(show_Favorite);
+    }
+    show_Data(working);
     var center = { lat: 23.099533, lng: 120.203401 };
     map.panTo(center);
     map.setZoom(10);
-
   });
 }
-function setMapOnAll(map) {
-  for (var i = 0; i < markers.length; i++) {
-    markers[i].setMap(map);
+
+  function setMapOnAll(map) {
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setMap(map);
+    }
   }
-}
 
-function clearMarkers() {
-  setMapOnAll(null);
-}
+  function clearMarkers() {
+    setMapOnAll(null);
+  }
 
-function deleteMarkers() {
-  //console.log(123);
-   clearMarkers();
-   markers = [];
-}
+
+
+  function deleteMarkers() {
+    //console.log(123);
+     clearMarkers();
+     markers = [];
+  }
+
