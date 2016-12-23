@@ -14,56 +14,111 @@ li { list-style:none;
         height: 100%;
         margin: 0;
         padding: 0;
-        background-attachment: fixed;
+        /*background-attachment: fixed;*/
+        background-color: #FFAF60;
+        overflow: hidden
       }
       #sitebody{
 　     width:600px;
 　     margin:0 auto;
 　     font-size:13px;
       }
+
+
       #top {
-        /*background-color:#CCCCFF;*/
-        height: 10%;
+        background-color: #FFAF60;
+        height: 5%;
+      }
+      #filter {
+        background-color: #FFAF60;
+        height: 5%;
       }
       #map {
         height:90%;
-        width: 70%;  
+        width: 73%;  
+        margin:0 auto;
       }
       #sidebar-left {
         overflow-y: scroll;
         overflow-x: scroll;
         /*background-color:#E38EFF;*/
+
         border-style:outset;
         height: 90%;
         width: 26%;
         float:left;
+        font-family:Microsoft JhengHei;
+        font-size:12px;
       }
      
       #fr{
        border-style:none;
-       width: 90%;
+       width: 100%;
        float:center;
        border-bottom: 1px solid #d2d2d2;
        list-style-type:none;
       }
       #fr2{
        border-style:none;
-       width: 100%;
+       width: 95%;
        float:center;
-       
+       margin:0px auto;
        list-style-type:none;
        
       }
 
       #favorite {
-          background-color: #ffffff;
-          border: none;
-          outline:none;
+        background-color: transparent;
+        border: none;
+         outline:none;
       }
 
-      .chcolor:hover{background:#CCEEFF;}
+      #res_detail{
+        color:black;
+      }
+
+      #opening_hours{
+        font-family:Microsoft JhengHei;
+        font-size:15px;
+        float: right;
+      }
+      .header{
+        width:100%;
+        height:50px;
+        background-color: #FFAF60;
+
+
+      }
+
+      .headerfont{
+        border-style: 0px solid;
+        border-color:#FFAF60;
+        font-size:15px;
+        font-family:Microsoft JhengHei;
+        color:#FFFFFF;
+        float: right;
+        width:100px;
+        height:50px;
+        text-align:center;
+        line-height:50px;
+      }
+      .headerfont:hover{background:#F75000;}
+      
+      .gmnoprint{
+          border-top-style: 3px solid ;
+        }
+
+
+      .chcolor:hover{background:#F0F0F0;}
+
+      .clearfix{color:#5555FF}
 
       a {
-       text-decoration:none;
+         text-decoration:none;
+      }
+      button {
+        background-color: transparent;
+        border: none;
+        outline:none;
       }
 </style>
