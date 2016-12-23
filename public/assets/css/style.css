@@ -32,6 +32,10 @@ li { list-style:none;
       #filter {
         background-color: #FFAF60;
         height: 5%;
+        width:100%;
+        font-family:Microsoft JhengHei;
+        color:#FFFFFF;
+        float: right;
       }
       #map {
         height:90%;

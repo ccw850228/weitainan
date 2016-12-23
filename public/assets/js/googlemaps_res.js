@@ -425,9 +425,7 @@ var dt = new Date();
     });
   }
 
-  function opening_hour(){
-
-  }
+ 
 
   function working(){
     var working=[]
